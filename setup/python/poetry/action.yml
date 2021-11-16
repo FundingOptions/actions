@@ -1,0 +1,16 @@
+name: 'Setup Poetry'
+description: 'a Wrapper for setting up Poetry'
+inputs:
+  version:
+    description: version of python to install
+    required: true
+  cache-version:
+    description: version flag to help with busting the cache
+    required: false
+    default: 'v1'
+
+runs:
+  using: 'composite'
+  steps:
+    - run: echo "TODO"
+      shell: bash

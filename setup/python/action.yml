@@ -1,0 +1,57 @@
+name: 'Setup Python'
+description: 'a Wrapper for setting up python'
+inputs:
+  version:
+    description: version of python to install
+    required: true
+  cache-version:
+    description: version flag to help with busting the cache
+    required: false
+    default: 'setup-py-v1'
+
+outputs:
+  version:
+    description: version of python installed
+    value: '${{ steps.install.outputs.python-version }}'
+runs:
+  using: 'composite'
+  steps:
+    - uses: actions/setup-python@v2
+      id: install
+      with:
+        python-version: "${{ inputs.version }}"
+
+    - uses: fundingoptions/actions/github-script@main
+      id: package-manager
+      with:
+        script-file: '${{ github.action_path }}/detect-package-manager.js'
+
+    - name: get pip cache directory
+      id: pip-cache
+      shell: bash
+      run: |
+        echo "::set-output name=dir::$(pip cache dir)"
+
+    - name: pip cache
+      uses: actions/cache@v2
+      with:
+        path: ${{ steps.pip-cache.outputs.dir }}
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+
+    - run: pip install -U pip wheel setuptools
+      name: 'ensure latest installation dependencies'
+      shell: bash
+
+    - uses: fundingoptions/actions/setup/python/pipenv@main
+      if: steps.package-manager.outputs.using == 'pipenv'
+      name: 'Setup pipenv'
+      with:
+        cache-version: '${{ inputs.cache-version }}'
+
+    - uses: fundingoptions/actions/setup/python/poetry@main
+      if: steps.package-manager.outputs.using == 'poetry'
+      name: 'Setup poetry'
+      with:
+        cache-version: '${{ inputs.cache-version }}'

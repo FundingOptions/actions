@@ -1,0 +1,45 @@
+name: 'Setup Pipenv'
+description: 'a Wrapper for setting up Pipenv'
+
+inputs:
+  cache-version:
+    description: version flag to help with busting the cache
+    required: false
+    default: 'v1'
+
+runs:
+  using: 'composite'
+  steps:
+    - run: pip install -U pipenv
+      name: 'Setup pipenv'
+      shell: bash
+
+    - run: |
+        import sys
+        version_str = "-".join([str(p) for p in sys.version_info])
+
+        # this is safe to do, as we know we only have safe characters
+        print("")
+        print(f"::set-output name=python-version::{version_str}")
+
+        import pipenv
+        pipenv_cache_dir = pipenv.environments.Setting().PIPENV_CACHE_DIR
+        print(f"::set-output name=pipenv-dir::{pipenv_cache_dir}")
+      id: metadata
+      shell: python
+
+    - name: setup pipenv caching (global)
+      uses: actions/cache@v2
+      with:
+        path: "${{ steps.metadata.outputs.pipenv-dir }}"
+        key: "os=${{ runner.os }}-cb=${{ inputs.cache-version }}-py=${{ steps.metadata.outputs.python-version }}-pipenv-global-${{ hashFiles('*/Pipfile.lock') }}"
+        restore-keys: |
+          os=${{ runner.os }}-cb=${{ inputs.cache-version }}-py=${{ steps.metadata.outputs.python-version }}-pipenv-global-
+
+    - name: setup pipenv caching (local)
+      uses: actions/cache@v2
+      with:
+        path: ".venv"
+        key: "os=${{ runner.os }}-cb=${{ inputs.cache-version }}-py=${{ steps.metadata.outputs.python-version }}-pipenv-local-${{ hashFiles('*/Pipfile.lock') }}"
+        restore-keys: |
+          os=${{ runner.os }}-cb=${{ inputs.cache-version }}-py=${{ steps.metadata.outputs.python-version }}-pipenv-local-
