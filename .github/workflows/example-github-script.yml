@@ -55,6 +55,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: ./github-script
+        id: get-cwd
         with:
           # script-file is relative to the working-directory
           script-file: '../.github/scripts/examples/get-cwd.js'
