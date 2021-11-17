@@ -35,10 +35,10 @@ function getDependencies(manager) {
   }
 }
 
-module.exports = async ({ core, github }) => {
-  workspace = github.workspace;
+module.exports = async ({ core }) => {
+  workspace = process.env.GITHUB_WORKSPACE;
   if (!workspace) {
-    throw Error("`env.WORKSPACE` not set");
+    throw Error("`env.GITHUB_WORKSPACE` not set");
   }
 
   const manager = detectManager(workspace);
