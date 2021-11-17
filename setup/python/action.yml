@@ -25,7 +25,7 @@ runs:
       with:
         python-version: "${{ inputs.version }}"
 
-    - uses: fundingoptions/actions/github-script@main
+    - uses: ./github-script
       id: package-manager
       with:
         script-file: '${{ github.action_path }}/detect-package-manager.js'
@@ -50,14 +50,14 @@ runs:
       name: 'ensure latest installation dependencies'
       shell: bash
 
-    - uses: fundingoptions/actions/setup/python/pipenv@main
+    - uses: ./setup/python/pipenv
       if: steps.package-manager.outputs.using == 'pipenv'
       name: 'Setup pipenv'
       with:
         cache-version: '${{ inputs.cache-version }}'
         working-directory: '${{ inputs.working-directory }}'
 
-    - uses: fundingoptions/actions/setup/python/poetry@main
+    - uses: ./setup/python/poetry
       if: steps.package-manager.outputs.using == 'poetry'
       name: 'Setup poetry'
       with:
