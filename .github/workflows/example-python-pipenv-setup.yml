@@ -21,6 +21,7 @@ jobs:
       - uses: ./setup/python
         with:
           version: '3.8'
+          working-directory: ./examples/python/pipenv
 
       - name: Python 3.8 was installed
         shell: python
