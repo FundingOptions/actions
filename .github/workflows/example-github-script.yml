@@ -1,0 +1,31 @@
+name: Example Github-Script usage
+
+on:
+  push:
+    branches:
+      - 'main'
+  pull_request:
+    branches:
+      - '*'
+
+jobs:
+  runs-script:
+    name: Runs Script
+    runs-on: ubuntu-latest
+    env:
+      OUTPUT_FILE: '.hello-world'
+      CONTENTS: 'Hello, World!'
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./github-script
+        with:
+          script-file: '.github/scripts/examples/write-content.js'
+
+      - run: |
+          contents="$(cat "${OUTPUT_FILE}")"
+          if [ "${contents}" != "${CONTENTS}" ]; then
+            echo "Expected contents to be ${CONTENTS}, but got ${contents}"
+            exit 1
+          fi
+
