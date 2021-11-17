@@ -25,6 +25,10 @@ inputs:
     description: The directory to run everything in
     default: '.'
     required: false
+  result-encoding:
+    description: The encoding to use for the result (string or json)
+    default: string
+    required: false
 
 outputs:
   result:
@@ -39,6 +43,7 @@ runs:
       with:
         github-token: '${{ inputs.github-token }}'
         user-agent: '${{ inputs.user-agent }}'
+        result-encoding: '${{ inputs.result-encoding }}'
         script: |
           // simulate how 'run' steps work, by moving to the expected directory.
           process.chdir('${{ inputs.working-directory }}');
