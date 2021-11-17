@@ -3,7 +3,7 @@ name: Setup Python (pipenv)
 on:
   push:
     branches:
-      - 'main'
+      - '*'
   pull_request:
     branches:
       - '*'
