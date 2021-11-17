@@ -31,12 +31,12 @@ function getDependencies(manager) {
     case "pipenv":
       return "pipenv";
     case "poetry":
-    
+
   }
 }
 
-module.exports = async ({ core }) => {
-  workspace = process.env.WORKSPACE;
+module.exports = async ({ core, github }) => {
+  workspace = github.workspace;
   if (!workspace) {
     throw Error("`env.WORKSPACE` not set");
   }
