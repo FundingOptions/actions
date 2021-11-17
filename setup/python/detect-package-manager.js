@@ -34,4 +34,5 @@ module.exports = async ({ core }) => {
 
   const manager = detectManager(workspace);
   core.setOutput("using", manager);
+  return manager;
 }
