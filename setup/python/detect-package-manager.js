@@ -4,7 +4,7 @@ const path = require('path');
 
 function isPipenv(directory) {
   return (
-    fs.existsSync(path.join(directory, 'Pipenv'))
+    fs.existsSync(path.join(directory, 'Pipfile'))
     && fs.existsSync(path.join(directory, 'Pipfile.lock'))
   );
 }
