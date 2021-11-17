@@ -26,20 +26,13 @@ function detectManager(directory) {
   }
 }
 
-function getDependencies(manager) {
-  switch (manager) {
-    case "pipenv":
-      return "pipenv";
-    case "poetry":
-
-  }
-}
-
 module.exports = async ({ core }) => {
   workspace = process.env.GITHUB_WORKSPACE;
   if (!workspace) {
-    throw Error("`env.GITHUB_WORKSPACE` not set");
+    core.error("`env.GITHUB_WORKSPACE` not set");
   }
+
+  core.info(`working inside ${workspace}`);
 
   const manager = detectManager(workspace);
   core.setOutput("using", manager);

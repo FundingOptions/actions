@@ -32,8 +32,6 @@ runs:
   steps:
     - uses: actions/github-script@v5
       id: script
-      env:
-        WORKSPACE: '${{ github.workspace }}'
       with:
         github-token: '${{ inputs.github-token }}'
         user-agent: '${{ inputs.user-agent }}'
