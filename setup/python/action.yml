@@ -51,14 +51,14 @@ runs:
       shell: bash
 
     - uses: ./setup/python/pipenv
-      if: steps.package-manager.outputs.using == 'pipenv'
+      if: steps.package-manager.outputs.result == 'pipenv'
       name: 'Setup pipenv'
       with:
         cache-version: '${{ inputs.cache-version }}'
         working-directory: '${{ inputs.working-directory }}'
 
     - uses: ./setup/python/poetry
-      if: steps.package-manager.outputs.using == 'poetry'
+      if: steps.package-manager.outputs.result == 'poetry'
       name: 'Setup poetry'
       with:
         cache-version: '${{ inputs.cache-version }}'
