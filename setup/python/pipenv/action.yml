@@ -25,6 +25,10 @@ runs:
         import pipenv
         pipenv_cache_dir = pipenv.environments.Setting().PIPENV_CACHE_DIR
         print(f"::set-output name=pipenv-dir::{pipenv_cache_dir}")
+
+        # we need to know the working directory, for sub-actions (it's not passed on its won)
+        import os
+        print(f"::set-output name=working-directory::{os.getcwd()}")
       id: metadata
       shell: python
 
@@ -39,7 +43,7 @@ runs:
     - name: setup pipenv caching (local)
       uses: actions/cache@v2
       with:
-        path: ".venv"
+        path: "${{ steps.metadata.outputs.working-directory }}/.venv"
         key: "os=${{ runner.os }}-cb=${{ inputs.cache-version }}-py=${{ steps.metadata.outputs.python-version }}-pipenv-local-${{ hashFiles('*/Pipfile.lock') }}"
         restore-keys: |
           os=${{ runner.os }}-cb=${{ inputs.cache-version }}-py=${{ steps.metadata.outputs.python-version }}-pipenv-local-

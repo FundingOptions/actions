@@ -42,3 +42,27 @@ jobs:
             echo "Expected run_id to be '${{ github.run_id }}', but got '${run_id}'"
             exit 1
           fi
+
+  supports-working-directory:
+    name: Supports Working Directory
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./examples
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./github-script
+        with:
+          # script-file is relative to the working-directory
+          script-file: '../.github/scripts/examples/get-cwd.js'
+
+      - name: Script is run in the specified 'working-directory'
+        shell: python
+        run: |
+          import os
+          detected_cwd = '${{ steps.get-cwd.outputs.result }}'
+          assert detected_cwd == os.getcwd(), (
+            f"Expected detected_cwd to be '{os.getcwd()}', "
+            f"but got '{detected_cwd}'"
+          )
