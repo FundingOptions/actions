@@ -21,6 +21,10 @@ inputs:
     description: An optional user-agent string
     default: fundingoptions/actions/github-script
     required: false
+  working-directory:
+    description: The directory to run everything in
+    default: '.'
+    required: false
 
 outputs:
   result:
@@ -30,13 +34,6 @@ outputs:
 runs:
   using: composite
   steps:
-    - name: get metadata for task
-      id: metadata
-      shell: python
-      run: |
-        import os
-        print("")
-        print(f"::set-output name=working-directory::{os.getcwd()}")
     - uses: actions/github-script@v5
       id: script
       with:
@@ -44,7 +41,7 @@ runs:
         user-agent: '${{ inputs.user-agent }}'
         script: |
           // simulate how 'run' steps work, by moving to the expected directory.
-          process.chdir('${{ steps.metadata.outputs.working-directory }}');
+          process.chdir('${{ inputs.working-directory }}');
           const script = require('${{ inputs.script-file }}');
           const result = script({
             context, core, github, exec, glob, io, require, __original_require__

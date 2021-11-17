@@ -46,9 +46,11 @@ jobs:
   supports-working-directory:
     name: Supports Working Directory
     runs-on: ubuntu-latest
+    env:
+      _working_directory: './examples'
     defaults:
       run:
-        working-directory: ./examples
+        working-directory: '${{ env._working_directory }}'
 
     steps:
       - uses: actions/checkout@v2
@@ -56,6 +58,7 @@ jobs:
         with:
           # script-file is relative to the working-directory
           script-file: '../.github/scripts/examples/get-cwd.js'
+          working-directory: '${{ env._working_directory }}'
 
       - name: Script is run in the specified 'working-directory'
         shell: python
