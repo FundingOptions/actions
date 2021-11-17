@@ -27,12 +27,10 @@ function detectManager(directory) {
 }
 
 module.exports = async ({ core }) => {
-  workspace = process.env.GITHUB_WORKSPACE;
-  if (!workspace) {
-    core.error("`env.GITHUB_WORKSPACE` not set");
-  }
+  const workspace = process.cwd();
 
   core.info(`working inside ${workspace}`);
+  core.info(`file list: ${fs.readdirSync(workspace).join(', ')}`)
 
   const manager = detectManager(workspace);
   core.setOutput("using", manager);
