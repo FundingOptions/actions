@@ -22,10 +22,23 @@ jobs:
         with:
           script-file: '.github/scripts/examples/write-content.js'
 
-      - run: |
+      - name: Script can use environment variables
+        run: |
           contents="$(cat "${OUTPUT_FILE}")"
           if [ "${contents}" != "${CONTENTS}" ]; then
-            echo "Expected contents to be ${CONTENTS}, but got ${contents}"
+            echo "Expected contents to be '${CONTENTS}', but got '${contents}'"
             exit 1
           fi
 
+      - uses: ./github-script
+        id: get-run-id
+        with:
+          script-file: '.github/scripts/examples/get-run-id.js'
+
+      - name: Script can use the context
+        run: |
+          run_id='${{ steps.get-run-id.outputs.result }}'
+          if [ "${run_id}" != '${{ github.run_id }}' ]; then
+            echo "Expected run_id to be '${{ github.run_id }}', but got '${run_id}'"
+            exit 1
+          fi

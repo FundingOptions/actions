@@ -22,10 +22,16 @@ inputs:
     default: fundingoptions/actions/github-script
     required: false
 
+outputs:
+  result:
+    description: The return of script-file.
+    value: '${{ steps.script.outputs.result }}'
+
 runs:
   using: composite
   steps:
     - uses: actions/github-script@v5
+      id: script
       env:
         WORKSPACE: '${{ github.workspace }}'
       with:
@@ -38,5 +44,6 @@ runs:
           });
           // permit async scripts to be run.
           if ('then' in result) {
-            await result;
+            return await result;
           }
+          return result;
