@@ -1,0 +1,36 @@
+name: Example Github-Script usage
+
+on:
+  push:
+    branches:
+      - 'main'
+  pull_request:
+    branches:
+      - '*'
+
+jobs:
+  setup:
+    name: Installs python + pipenv
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./example/python/pipenv
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./setup/python
+        with:
+          version: '3.8'
+
+      - name: Python 3.8 was installed
+        shell: python
+        run: |
+          import sys
+          assert sys.version_info[:2] == (3, 8)
+
+      - name: pipenv was installed
+        run:
+          if ! command -v pipenv > /dev/null; then
+            echo "pipenv not installed"
+            exit 1
+          fi
