@@ -29,8 +29,8 @@ jobs:
           assert sys.version_info[:2] == (3, 8)
 
       - name: pipenv was installed
-        run:
-          if ! command -v pipenv > /dev/null; then
+        run: |
+          if ! (command -v pipenv > /dev/null); then
             echo "pipenv not installed"
             exit 1
           fi
