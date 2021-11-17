@@ -1,4 +1,4 @@
-name: Example Github-Script usage
+name: Github-Script
 
 on:
   push:
