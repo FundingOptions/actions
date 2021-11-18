@@ -25,7 +25,13 @@ runs:
       with:
         python-version: "${{ inputs.version }}"
 
-    - uses: ./github-script
+    - name: Expose co-actions
+      shell: bash
+      run: |
+        action_dir='${{ github.action_path }}'
+        cp -r "${action_dir}/../../" ".__fops-actions__-setup-python/" || :
+
+    - uses: ./.__fops-actions__-setup-python/github-script
       id: package-manager
       with:
         script-file: '${{ github.action_path }}/detect-package-manager.js'
@@ -50,16 +56,21 @@ runs:
       name: 'ensure latest installation dependencies'
       shell: bash
 
-    - uses: ./setup/python/pipenv
+    - uses: ./.__fops-actions__-setup-python/setup/python/pipenv
       if: steps.package-manager.outputs.result == 'pipenv'
       name: 'Setup pipenv'
       with:
         cache-version: '${{ inputs.cache-version }}'
         working-directory: '${{ inputs.working-directory }}'
 
-    - uses: ./setup/python/poetry
+    - uses: ./.__fops-actions__/python/poetry
       if: steps.package-manager.outputs.result == 'poetry'
       name: 'Setup poetry'
       with:
         cache-version: '${{ inputs.cache-version }}'
         working-directory: '${{ inputs.working-directory }}'
+
+    - name: Cleanup co-actions
+      shell: bash
+      run: |
+        rm -rf ./.__fops-actions__-setup-python
