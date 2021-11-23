@@ -44,6 +44,8 @@ runs:
   steps:
     - uses: actions/github-script@v5
       id: script
+      env:
+        ARBITRARY_INPUTS: '${{ inputs.github-token }}'
       with:
         github-token: '${{ inputs.github-token }}'
         user-agent: '${{ inputs.user-agent }}'
@@ -51,7 +53,7 @@ runs:
         script: |
           // simulate how 'run' steps work, by moving to the expected directory.
           process.chdir('${{ inputs.working-directory }}');
-          const inputs = JSON.parse('${{ inputs.inputs }}');
+          const inputs = JSON.parse(process.env.ARBITRARY_INPUTS);
           const script = require('${{ inputs.script-file }}');
           const result = script({
             context, core, github, exec, glob, io, require, __original_require__, inputs
