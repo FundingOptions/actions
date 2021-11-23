@@ -1,0 +1,43 @@
+name: 'Create Release PR'
+author: 'Funding Options'
+description: 'Creates a Release PR, targeting the Release Branch'
+inputs:
+  base-branch:
+    default: release
+    description: 'The name of the release branch'
+    required: true
+
+  head-branch:
+    default: '${{ github.ref_name }}'
+    description: 'The name of branch to merge into the release branch'
+    required: true
+
+  github-token:
+    description: The GitHub token used to create an authenticated client
+    default: ${{ github.token }}
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Expose co-actions
+      shell: bash
+      run: |
+        action_dir='${{ github.action_path }}'
+        cp -r "${action_dir}/../../" ".__fops-actions__-release-pr/" || :
+
+    - name: Upsert PR
+      uses: ./.__fops-actions__-release-pr/github-script
+      with:
+        script-file: '${{ github.action_path }}/upsert-release-pr.js'
+        github-token: '${{ inputs.github-token }}'
+        inputs: |
+          {
+            "baseBranch": ${{ toJSON(inputs.base-branch) }},
+            "headBranch": ${{ toJSON(inputs.head-branch) }}
+          }
+
+    - name: Cleanup co-actions
+      shell: bash
+      run: |
+        rm -rf ./.__fops-actions__-release-pr

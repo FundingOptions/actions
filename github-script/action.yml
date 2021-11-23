@@ -29,6 +29,10 @@ inputs:
     description: The encoding to use for the result (string or json)
     default: string
     required: false
+  inputs:
+    description: 'JSON encoded object to pass to the script'
+    default: '{}'
+    required: false
 
 outputs:
   result:
@@ -47,9 +51,10 @@ runs:
         script: |
           // simulate how 'run' steps work, by moving to the expected directory.
           process.chdir('${{ inputs.working-directory }}');
+          const inputs = JSON.parse('${{ inputs.inputs }}');
           const script = require('${{ inputs.script-file }}');
           const result = script({
-            context, core, github, exec, glob, io, require, __original_require__
+            context, core, github, exec, glob, io, require, __original_require__, inputs
           });
           // permit async scripts to be run.
           if ('then' in result) {
