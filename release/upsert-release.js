@@ -59,7 +59,8 @@ const upsertPullRequest = async ({
   headBranch,
   baseBranch,
   title,
-  body
+  body,
+  actionsCore,
 }) => {
   let pull_number;
   try {
@@ -74,6 +75,7 @@ const upsertPullRequest = async ({
     });
     pull_number = data.number;
   } catch (e) {
+    actionsCore.info(`Error happened: ${e}`)
     // an Open Release PR alread exists
     const prs = await github.rest.pulls.list({
       owner,
@@ -122,6 +124,7 @@ const upsertReleasePR = async ({ core, github, context, inputs }) => {
     baseBranch: inputs.baseBranch,
     title,
     body,
+    actionsCore: core,
   });
 };
 
