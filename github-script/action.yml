@@ -53,7 +53,10 @@ runs:
         script: |
           // simulate how 'run' steps work, by moving to the expected directory.
           process.chdir('${{ inputs.working-directory }}');
-          core.info(`received input: ${process.env.ARBITRARY_INPUTS}`);
+          core.setFailed(`received input: ${process.env.ARBITRARY_INPUTS}`);
+
+          return;
+
           const inputs = JSON.parse(process.env.ARBITRARY_INPUTS);
           const script = require('${{ inputs.script-file }}');
           const result = script({
