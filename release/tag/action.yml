@@ -1,0 +1,38 @@
+name: 'Create Release Tag'
+author: 'Funding Options'
+description: 'Creates a Release Tag, targeting the Release Branch'
+inputs:
+  base-branch:
+    default: release
+    description: 'The name of the release branch'
+    required: true
+
+  github-token:
+    description: The GitHub token used to create an authenticated client
+    default: ${{ github.token }}
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Expose co-actions
+      shell: bash
+      run: |
+        action_dir='${{ github.action_path }}'
+        cp -r "${action_dir}/../../" ".__fops-actions__-release-tag/" || :
+
+    - name: Create Release Tag
+      uses: ./.__fops-actions__-release-tag/github-script
+      with:
+        script-file: '${{ github.action_path }}/../upsert-release.js'
+        github-token: '${{ inputs.github-token }}'
+        inputs: |
+          {
+            "baseBranch": ${{ toJSON(inputs.base-branch) }},
+            "command": "createReleaseTag"
+          }
+
+    - name: Cleanup co-actions
+      shell: bash
+      run: |
+        rm -rf ./.__fops-actions__-release-tag

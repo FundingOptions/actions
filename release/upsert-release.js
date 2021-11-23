@@ -36,13 +36,13 @@ const generateRelaseNotes = async ({
   repo: {owner, repo},
   previousReleaseName,
   newReleaseName,
-  headBranch,
+  targetingBranch,
 }) => {
   const { data: body } = await github.rest.repos.generateReleaseNotes({
     owner,
     repo,
     tag_name: newReleaseName,
-    target_commitish: headBranch,
+    target_commitish: targetingBranch,
     previous_tag_name: previousReleaseName,
   });
 
@@ -108,7 +108,7 @@ const upsertReleasePR = async ({ core, github, context, inputs }) => {
     repo,
     previousReleaseName: lastReleaseName,
     newReleaseName,
-    headBranch: inputs.headBranch,
+    targetingBranch: inputs.headBranch,
   });
 
   await upsertPullRequest({
@@ -121,10 +121,35 @@ const upsertReleasePR = async ({ core, github, context, inputs }) => {
   });
 };
 
+const createReleaseTag = async ({ core, github, context, inputs }) => {
+  const {owner, repo} = context.repo();
+
+  const previousReleaseName = await getPreviousReleaseName({ github, repo });
+
+  if (!previousReleaseName) {
+    core.setFailed(`No past releases found for ${repo.owner}/${repo.repo}`);
+    return;
+  }
+
+  const newReleaseName = await incrementRelease({ name: previousReleaseName });
+
+  await github.rest.repos.createRelease({
+    owner,
+    repo,
+    tag_name: newReleaseName,
+    target_commitish: inputs.baseBranch,
+    name: newReleaseName,
+    generate_release_notes: true
+  })
+}
+
 module.exports = async ({ core, github, context, inputs }) => {
   switch (inputs.command) {
     case 'releasePR':
       await upsertReleasePR({ core, github, context, inputs });
+      break;
+    case 'createReleaseTag':
+      await createReleaseTag({ core, github, context, inputs });
       break;
   }
 };
