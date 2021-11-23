@@ -92,7 +92,7 @@ const upsertPullRequest = async ({
   }
 }
 
-module.exports = async ({ core, github, context, inputs }) => {
+const upsertReleasePR = async ({ core, github, context, inputs }) => {
   const repo = context.repo();
   const previousReleaseName = await getPreviousReleaseName({ github, repo });
 
@@ -119,4 +119,12 @@ module.exports = async ({ core, github, context, inputs }) => {
     title,
     body,
   });
+};
+
+module.exports = async ({ core, github, context, inputs }) => {
+  switch (inputs.command) {
+    case 'releasePR':
+      await upsertReleasePR({ core, github, context, inputs });
+      break;
+  }
 };

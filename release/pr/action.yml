@@ -29,12 +29,13 @@ runs:
     - name: Upsert PR
       uses: ./.__fops-actions__-release-pr/github-script
       with:
-        script-file: '${{ github.action_path }}/upsert-release-pr.js'
+        script-file: '${{ github.action_path }}/../upsert-release.js'
         github-token: '${{ inputs.github-token }}'
         inputs: |
           {
             "baseBranch": ${{ toJSON(inputs.base-branch) }},
-            "headBranch": ${{ toJSON(inputs.head-branch) }}
+            "headBranch": ${{ toJSON(inputs.head-branch) }},
+            "command": "buildReleasePR"
           }
 
     - name: Cleanup co-actions
