@@ -53,7 +53,7 @@ runs:
         script: |
           // simulate how 'run' steps work, by moving to the expected directory.
           process.chdir('${{ inputs.working-directory }}');
-          core.setFailed(`received input: ${process.env.ARBITRARY_INPUTS}`);
+          core.setFailed(`received input: ${Buffer.from(process.env.ARBITRARY_INPUTS, 'utf-8').toString('base64')}`);
 
           return;
 
