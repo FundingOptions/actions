@@ -63,7 +63,7 @@ const upsertPullRequest = async ({
 }) => {
   let pull_number;
   try {
-    const { data } = await github.pulls.create({
+    const { data } = await github.rest.pulls.create({
       owner,
       repo,
       title,
@@ -75,7 +75,7 @@ const upsertPullRequest = async ({
     pull_number = data.number;
   } catch (e) {
     // an Open Release PR alread exists
-    const prs = await github.pulls.list({
+    const prs = await github.rest.pulls.list({
       owner,
       repo,
       state: "open",
