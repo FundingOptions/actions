@@ -106,7 +106,7 @@ const upsertReleasePR = async ({ core, github, context, inputs }) => {
   const body = await generateRelaseNotes({
     github,
     repo,
-    previousReleaseName: lastReleaseName,
+    previousReleaseName,
     newReleaseName,
     targetingBranch: inputs.headBranch,
   });
