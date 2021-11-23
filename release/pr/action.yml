@@ -31,7 +31,7 @@ runs:
       with:
         script-file: '${{ github.action_path }}/../upsert-release.js'
         github-token: '${{ inputs.github-token }}'
-        inputs: |
+        inputs: >-
           {
             "baseBranch": ${{ toJSON(inputs.base-branch) }},
             "headBranch": ${{ toJSON(inputs.head-branch) }},
