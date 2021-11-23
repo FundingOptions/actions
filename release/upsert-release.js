@@ -38,13 +38,17 @@ const generateRelaseNotes = async ({
   newReleaseName,
   targetingBranch,
 }) => {
-  const { data: body } = await github.rest.repos.generateReleaseNotes({
-    owner,
-    repo,
-    tag_name: newReleaseName,
-    target_commitish: targetingBranch,
-    previous_tag_name: previousReleaseName,
-  });
+  // github-script doesn't have latest methods installed
+  // ref: https://github.com/octokit/request.js/
+  const { data: body } = await github.request(
+    'POST /repos/{owner}/{repo}/releases/generate-notes', {
+      owner,
+      repo,
+      tag_name: newReleaseName,
+      target_commitish: targetingBranch,
+      previous_tag_name: previousReleaseName,
+      }
+  );
 
   return body;
 }
