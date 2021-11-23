@@ -40,7 +40,7 @@ const generateRelaseNotes = async ({
 }) => {
   // github-script doesn't have latest methods installed
   // ref: https://github.com/octokit/request.js/
-  const { data: body } = await github.request(
+  const { data } = await github.request(
     'POST /repos/{owner}/{repo}/releases/generate-notes', {
       owner,
       repo,
@@ -50,7 +50,7 @@ const generateRelaseNotes = async ({
       }
   );
 
-  return body;
+  return data.body;
 }
 
 const upsertPullRequest = async ({
@@ -63,6 +63,7 @@ const upsertPullRequest = async ({
   actionsCore,
 }) => {
   let pull_number;
+  actionsCore.info(`Creating PR: ${headBranch}=>${baseBranch}: ${ { title, body } }`)
   try {
     const { data } = await github.rest.pulls.create({
       owner,
