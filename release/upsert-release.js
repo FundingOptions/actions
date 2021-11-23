@@ -93,7 +93,7 @@ const upsertPullRequest = async ({
 }
 
 const upsertReleasePR = async ({ core, github, context, inputs }) => {
-  const repo = context.repo();
+  const repo = context.repo;
   const previousReleaseName = await getPreviousReleaseName({ github, repo });
 
   if (!previousReleaseName) {
@@ -122,8 +122,7 @@ const upsertReleasePR = async ({ core, github, context, inputs }) => {
 };
 
 const createReleaseTag = async ({ core, github, context, inputs }) => {
-  const {owner, repo} = context.repo();
-
+  const {owner, repo} = context.repo;
   const previousReleaseName = await getPreviousReleaseName({ github, repo });
 
   if (!previousReleaseName) {
