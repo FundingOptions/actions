@@ -144,8 +144,9 @@ const createReleaseTag = async ({ core, github, context, inputs }) => {
 }
 
 module.exports = async ({ core, github, context, inputs }) => {
+  core.info(`Executing command: ${inputs.command}`)
   switch (inputs.command) {
-    case 'releasePR':
+    case 'buildReleasePR':
       await upsertReleasePR({ core, github, context, inputs });
       break;
     case 'createReleaseTag':
