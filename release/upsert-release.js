@@ -130,7 +130,7 @@ const upsertReleasePR = async ({ core, github, context, inputs }) => {
 };
 
 const createReleaseTag = async ({ core, github, context, inputs }) => {
-  const {owner, repo} = context.repo;
+  const repo = context.repo;
   const previousReleaseName = await getPreviousReleaseName({ github, repo });
 
   if (!previousReleaseName) {
@@ -141,8 +141,8 @@ const createReleaseTag = async ({ core, github, context, inputs }) => {
   const newReleaseName = await incrementRelease({ name: previousReleaseName });
 
   await github.rest.repos.createRelease({
-    owner,
-    repo,
+    owner: repo.owner,
+    repo: repo.repo,
     tag_name: newReleaseName,
     target_commitish: inputs.baseBranch,
     name: newReleaseName,
