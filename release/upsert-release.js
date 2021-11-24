@@ -89,7 +89,7 @@ const upsertPullRequest = async ({
     if (prs.data.length !== 1) throw Error("Expected 1 PR to be found");
 
     pull_number = prs.data[0].number;
-    await github.pulls.update({
+    await github.rest.pulls.update({
       owner,
       repo,
       pull_number,
