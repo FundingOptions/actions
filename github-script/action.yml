@@ -42,7 +42,7 @@ outputs:
 runs:
   using: composite
   steps:
-    - uses: actions/github-script@v5
+    - uses: actions/github-script@v6
       id: script
       env:
         ARBITRARY_INPUTS: '${{ inputs.inputs }}'
