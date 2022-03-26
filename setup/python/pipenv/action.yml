@@ -36,7 +36,7 @@ runs:
       working-directory: '${{ inputs.working-directory }}'
 
     - name: setup pipenv caching (global)
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         path: "${{ steps.metadata.outputs.pipenv-dir }}"
         key: "os=${{ runner.os }}-cb=${{ inputs.cache-version }}-py=${{ steps.metadata.outputs.python-version }}-pipenv-global-${{ hashFiles('*/Pipfile.lock') }}"
@@ -44,7 +44,7 @@ runs:
           os=${{ runner.os }}-cb=${{ inputs.cache-version }}-py=${{ steps.metadata.outputs.python-version }}-pipenv-global-
 
     - name: setup pipenv caching (local)
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         path: "${{ inputs.working-directory }}/.venv"
         key: "os=${{ runner.os }}-cb=${{ inputs.cache-version }}-py=${{ steps.metadata.outputs.python-version }}-pipenv-local-${{ hashFiles('*/Pipfile.lock') }}"
